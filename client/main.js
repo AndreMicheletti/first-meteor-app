@@ -12,12 +12,30 @@ const renderPlayers = function(playerList) {
   });
 };
 
+const insertPlayer = function(e) {
+  let playerName = e.target.playerName.value
+  e.preventDefault() // This prevent the page refresh behaviour
+  e.target.playerName.value = ''
+  Players.insert({
+    'name': playerName,
+    'score': 0
+  })
+};
+
 /* When DOM is ready loading, meteor.startup will run */
 Meteor.startup(function() {
+  /* Tracker autorun will run everytime Mongo gets updated */
   Tracker.autorun(function() {
     let players = Players.find().fetch();
     let jsx = (
-      <div>{renderPlayers(players)}</div>
+      <div>
+        <h1>Meteor App</h1>
+        <div>{renderPlayers(players)}</div>
+        <form onSubmit={insertPlayer}>
+          <input type='text' name='playerName' placeholder='Nome do jogador...' />
+          <button>Inserir</button>
+        </form>
+      </div>
     );
     ReactDOM.render(jsx, document.getElementById('app'))
   });
